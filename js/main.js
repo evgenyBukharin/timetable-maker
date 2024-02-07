@@ -21555,7 +21555,7 @@ var moment = __webpack_require__(7412);
 var moment_default = /*#__PURE__*/__webpack_require__.n(moment);
 ;// CONCATENATED MODULE: ./src/js/components/table-drawing.js
 
-const doctorsList = ["Скворцова", "Акула", "Маслов", "Жираф", "Джулиан", "Глория"];
+const doctorsList = ["Скворцова", "Акула", "Маслов", "Жираф", "Джулиан", "Глория", "Шнейдерман"];
 const timetableData = [{
   firstHalf: [{
     name: "Скворцова",
@@ -21693,7 +21693,7 @@ const timetableData = [{
   }]
 }, {
   firstHalf: [{
-    name: "Скворцова",
+    name: "Шнейдерман",
     time: ""
   }, {
     name: "Акула",
