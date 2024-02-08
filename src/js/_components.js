@@ -1,1 +1,2 @@
-import "./components/asd";
+import "./components/table-drawing";
+import "./components/right-click";
