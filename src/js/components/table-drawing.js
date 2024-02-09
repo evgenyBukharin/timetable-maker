@@ -1833,6 +1833,11 @@ const timetableData = [
 	},
 ];
 
+const doctorsBook = {};
+doctorsList.forEach((obj) => {
+	doctorsBook[obj.name] = obj.doctorId;
+});
+
 // количество рядов в каждом дне (слоты под сотрудника)
 const cellRowsCount = 7;
 // количество колонок в каждом дне (слоты под инпуты сотрудников)
@@ -1896,7 +1901,7 @@ const daysInMonth = currentMoment.daysInMonth();
 const currentWeekDayId = currentMoment.day();
 const currentWeekDay = weekDays[currentWeekDayId];
 
-monthEl.innerHTML = url.searchParams.get("month");
+monthEl.innerHTML = `${url.searchParams.get("month")} ${url.searchParams.get("year")}`;
 
 const cellsContainer = document.querySelector(".maker__days");
 
@@ -2009,6 +2014,7 @@ function drawInputsColumns(columnsCount, parent, dayData) {
 				};
 				foreachArray.unshift({ name: "", doctorId: null });
 			}
+			foreachArray.push({ name: "", doctorId: null });
 			foreachArray.forEach((doctor) => {
 				let newOption = document.createElement("option");
 				newOption.innerHTML = doctor.name;
@@ -2025,6 +2031,12 @@ function drawInputsColumns(columnsCount, parent, dayData) {
 			if (dayData) {
 				newInput.setAttribute("value", dayData[dayDataKeys[k]][j].time);
 			}
+			newInput.addEventListener("keydown", (e) => {
+				validateTimeInput(e);
+			});
+			newInput.addEventListener("change", (e) => {
+				validateTimeInputValue(e);
+			});
 			newSelectContainer.appendChild(newInput);
 		}
 		parent.appendChild(cellColumn);
@@ -2052,12 +2064,95 @@ function initTable(timetableData) {
 	drawEmptyCells(cellsCount - getEmptyCellsCount() - daysInMonth);
 }
 
+let allowedCharacters = [
+	"1",
+	"2",
+	"3",
+	"4",
+	"5",
+	"6",
+	"7",
+	"8",
+	"9",
+	"0",
+	"-",
+	":",
+	"Backspace",
+	"Delete",
+	"ArrowLeft",
+	"ArrowRight",
+];
+
+function validateTimeInput(e) {
+	if (!allowedCharacters.includes(e.key)) {
+		e.preventDefault();
+	}
+	if (e.key == "-" && e.target.value.includes("-")) {
+		e.preventDefault();
+	}
+}
+
+function validateTimeInputValue(e) {
+	// let input = e.target;
+	// let value = input.value;
+	// let arrayValue = value.split("-");
+	// if (arrayValue[0].length > 4) {
+	// 	input.classList.add("maker__input-invalid");
+	// } else {
+	// 	input.classList.remove("maker__input-invalid");
+	// }
+}
+
 initTable(timetableData);
 
 const saveButton = document.querySelector(".maker__button-save");
 saveButton.addEventListener("click", () => {
-	console.log("collect data and send");
+	let defaultCells = document.querySelectorAll(".maker__cell-default");
+	let cellsColelctedData = [];
+	defaultCells.forEach((cell) => {
+		let cellData = [];
+		let columns = cell.querySelectorAll(".maker__column");
+		columns.forEach((column, columnIdx) => {
+			let dataContainers = column.querySelectorAll(".maker__container-select");
+			let columnData = [];
+			dataContainers.forEach((container) => {
+				let containerData = {
+					doctorId: doctorsBook[container.querySelector(".maker__select").value],
+					time: getDoctorTime(
+						container.querySelector(".maker__input").value,
+						container.querySelector(".maker__select").value,
+						columnIdx,
+						columns.length
+					),
+				};
+				columnData.push(containerData);
+			});
+			cellData.push(columnData);
+		});
+		cellsColelctedData.push(cellData);
+	});
+	console.log(cellsColelctedData);
 });
+
+function getDoctorTime(inputValue, doctorId, columnId, columnsCount) {
+	if (inputValue !== "") {
+		return inputValue;
+	}
+	if (doctorsBook[doctorId] !== undefined) {
+		// воскресенье
+		if (columnsCount == 1) {
+			return "9-19";
+		}
+		switch (columnId) {
+			// первая колонна -> стандартный период 9-15
+			case 0:
+				return "9-15";
+			// вторая колонна -> стандартный период 15-21
+			case 1:
+				return "15-21";
+		}
+	}
+}
 
 function updateGetParam(name, value) {
 	url.searchParams.set(name, value);
