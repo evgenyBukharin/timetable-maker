@@ -22101,10 +22101,13 @@
 							doctorId: null,
 						});
 					}
-					foreachArray.push({
-						name: "",
-						doctorId: null,
-					});
+					if (foreachArray[0].name !== "") {
+						foreachArray.push({
+							name: "",
+							doctorId: null,
+						});
+					}
+					console.log(foreachArray);
 					foreachArray.forEach((doctor) => {
 						let newOption = document.createElement("option");
 						newOption.innerHTML = doctor.name;

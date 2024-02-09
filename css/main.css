@@ -9,17 +9,6 @@
 	--grey-color: #daeef3;
 	--purple-color: #964377;
 }
-.custom-checkbox__field:checked + .custom-checkbox__content::after {
-	opacity: 1;
-}
-.custom-checkbox__field:focus + .custom-checkbox__content::before {
-	outline: red solid 2px;
-	outline-offset: 2px;
-}
-.custom-checkbox__field:disabled + .custom-checkbox__content {
-	opacity: 0.4;
-	pointer-events: none;
-}
 @font-face {
 	font-family: Montserrat;
 	src: url(../fonts/Montserrat-Regular.woff2) format("woff2");
